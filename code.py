@@ -4,6 +4,7 @@ from lxml import html
 import re
 import json
 
+#取出text城市名
 def get_city(href,headers,tr='citytr'):
     base_href="http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2017/"
     url=base_href+href
@@ -27,6 +28,8 @@ def get_city(href,headers,tr='citytr'):
 link="http://www.stats.gov.cn/tjsj/tjbz/tjyqhdmhcxhfdm/2017/index.html"
 # link='http://www.baidu.com/'
 #s = requests.Session()
+
+#提供浏览器的request header
 headers={
 "User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36",
 "Upgrade-Insecure-Requests": "1"
@@ -38,7 +41,9 @@ print(response.status_code)
 #print(response.request.headers)
 str=response.content.decode('gb2312')
 #print(str)
-bsobj=BeautifulSoup(response.content,'lxml') #将网页源码构造成BeautifulSoup对象，方便操作
+
+#将网页源码构造成BeautifulSoup对象，方便操作
+bsobj=BeautifulSoup(response.content,'lxml') 
 a_list=bsobj.find(class_='provincetable').find_all('a')
 province=[]
 for a in a_list:
@@ -47,11 +52,14 @@ for a in a_list:
     id=href.split('.')[0]
     matchobj=re.search('市',name)
     if matchobj:
+        #根据实际情况修改地址，以跳转下一个链接
         href=id+'/'+id+'01.html'
         city_list=get_city(href,headers,tr='countytr')
     else:
         city_list=get_city(href,headers)
     province.append({"id":id,"name":name,"children":city_list})
+    
+#将结果存为json文件
 with open('city.json','w') as fp:
     json.dump(province,fp,ensure_ascii=False) #需要在open时加上encoding=‘utf-8'
     
