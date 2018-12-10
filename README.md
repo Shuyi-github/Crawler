@@ -1,5 +1,5 @@
 # Crawler
-A simple program aims to get all the province & city infomation from National Bureau of Statistics of P.R.C
+A simple program aims to extract all the province & city infomation from National Bureau of Statistics of P.R.C
 
 target link:
 
